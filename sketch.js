@@ -3,6 +3,7 @@ let SCREEN_SIZE = 80
 
 let snowman, platform;
 let snowmanImg, platformImg;
+let buttons = [];
 
 let mainScene;
 
@@ -32,6 +33,54 @@ class Scene
         {
             s.draw();
         }
+    }
+}
+
+class Button
+{
+    #label;
+    #x; #y;
+    #width; #height;
+    #onClick;
+
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {String} label 
+     * @param {Function} onClick 
+     */
+    constructor(x, y, width, height, label, onClick)
+    {
+        this.#x = x;
+        this.#y = y;
+        this.#width = width;
+        this.#height = height;
+        this.#label = label;
+        this.#onClick = onClick;
+    }
+
+    draw()
+    {
+        fill( this.isMouseOver() ? color(100, 0, 0) : color(255, 0, 0) );
+        rect(this.#x, this.#y, this.#width, this.#height);
+        fill(255, 255, 255);
+        text(this.#label, this.#x+this.#width/2, this.#y+this.#height/2);
+    }
+
+    click()
+    {
+        this.#onClick();
+    }
+
+    isMouseOver()
+    {
+        return (
+            mouseX > this.#x && mouseX < this.#x + this.#width &&
+            mouseY > this.#y && mouseY < this.#y + this.#height
+        );
     }
 }
 
@@ -80,15 +129,35 @@ function setup()
 {
     createCanvas(640, 640);
     imageMode(CENTER);
+    textAlign(CENTER, CENTER);
+    textSize(18);
 
     snowman = new Snowman([snowmanImg], SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 32);
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     mainScene = new Scene([platform, snowman], color(0, 255, 255));
+    button = new Button(0, 0, 100, 50, "Button 1", buttonFunction);
 
     activeScene = mainScene;
+    buttons.push(button);
 }
 
 function draw()
 {
     activeScene.draw();
+
+    button.draw();
+}
+
+function mouseClicked()
+{
+    for (let b of buttons)
+    {
+        if (b.isMouseOver())
+            b.click();
+    }
+}
+
+function buttonFunction()
+{
+    console.log("PRESSED BUTTON");
 }

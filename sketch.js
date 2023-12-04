@@ -1,9 +1,14 @@
 let SCALE = 8;
 let SCREEN_SIZE = 80
 
-let snowman, platform;
-let snowmanImg, platformImg;
+let BUTTON_WIDTH = 12;
+let BUTTON_HEIGHT = 6;
+
+let snowman, snowmanImg;
+let platform, platformImg;
+
 let buttons = [];
+let wardrobeButton;
 
 let mainScene;
 
@@ -54,10 +59,10 @@ class Button
      */
     constructor(x, y, width, height, label, onClick)
     {
-        this.#x = x;
-        this.#y = y;
-        this.#width = width;
-        this.#height = height;
+        this.#x = x * SCALE;
+        this.#y = y * SCALE;
+        this.#width = width * SCALE;
+        this.#height = height * SCALE;
         this.#label = label;
         this.#onClick = onClick;
     }
@@ -134,18 +139,23 @@ function setup()
 
     snowman = new Snowman([snowmanImg], SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 32);
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
+    
+    homeButton = new Button(0, 0, BUTTON_WIDTH, BUTTON_HEIGHT, "Home", goHome);
+    wardrobeButton = new Button(BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT, "Wardrobe", openWardrobe);
+    
     mainScene = new Scene([platform, snowman], color(0, 255, 255));
-    button = new Button(0, 0, 100, 50, "Button 1", buttonFunction);
+    wardrobeScene = new Scene([], color(204, 102, 0));    
 
     activeScene = mainScene;
-    buttons.push(button);
+    buttons.push(wardrobeButton, homeButton);
 }
 
 function draw()
 {
     activeScene.draw();
 
-    button.draw();
+    for (let b of buttons)
+        b.draw();
 }
 
 function mouseClicked()
@@ -155,6 +165,25 @@ function mouseClicked()
         if (b.isMouseOver())
             b.click();
     }
+}
+
+/**
+ * 
+ * @param {Scene} scene 
+ */
+function loadScene(scene)
+{
+    activeScene = scene;
+}
+
+function openWardrobe()
+{
+    loadScene(wardrobeScene);
+}
+
+function goHome()
+{
+    loadScene(mainScene);
 }
 
 function buttonFunction()

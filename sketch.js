@@ -208,7 +208,8 @@ function draw()
 {
     activeScene.draw();
 
-    drawSnow();
+    if (activeScene == mainScene)
+        drawSnow();
 
     for (let b of buttons)
         b.draw();

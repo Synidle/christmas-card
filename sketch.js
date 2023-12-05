@@ -6,8 +6,8 @@ let FRAMERATE = 12;
 let BUTTON_WIDTH = 12;
 let BUTTON_HEIGHT = 6;
 
-let money = 0;
-let temperature = 0;
+let money = 10;
+let temperature = -5;
 let insulation = 0;
 let health = 100;
 
@@ -144,6 +144,15 @@ class Snowman extends Sprite
 {
     #clothes = [null, null];
 
+    get insulation()
+    {
+        let i = 0;
+        for (let c of this.#clothes)
+            if (c != null)
+                i += c.insulation;
+        return i;
+    }
+
     constructor(img, x, y, width, height)
     {
         super(img, x, y, width, height);
@@ -179,13 +188,16 @@ class Snowman extends Sprite
 class Clothing extends Sprite
 {
     #type;
+    #insulation;
 
     get type() { return this.#type; }
+    get insulation() { return this.#insulation; }
 
-    constructor(img, type)
+    constructor(img, type, insulation)
     {
         super(img, SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 48);
         this.#type = type;
+        this.#insulation = insulation;
     }
 }
 
@@ -235,11 +247,12 @@ function setup()
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
 
-    tophat = new Clothing([tophatImg], "hat");
-    necktie = new Clothing([necktieImg], "accessory");
+    tophat = new Clothing([tophatImg], "hat", 5);
+    necktie = new Clothing([necktieImg], "accessory", 1);
 
     snowman.wearClothing(tophat);
     snowman.wearClothing(necktie);
+    insulation = snowman.insulation;
     
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);

@@ -6,6 +6,11 @@ let FRAMERATE = 12;
 let BUTTON_WIDTH = 12;
 let BUTTON_HEIGHT = 6;
 
+let money = 0;
+let temperature = 0;
+let insulation = 0;
+let health = 100;
+
 let snowman, snowmanImg;
 let platform, platformImg;
 let snowBG, snowBGImg;
@@ -13,9 +18,11 @@ let snowBG, snowBGImg;
 let snowSprites = [];
 
 let buttons = [];
-let wardrobeButton;
+let labels = [];
+let wardrobeButton, equipmentButton;
+let moneyLabel, temperatureLabel, insulationLabel, healthLabel;
 
-let mainScene;
+let mainScene, wardrobeScene, equipmentScene;
 let activeScene;
 
 class Scene
@@ -45,38 +52,46 @@ class Scene
     }
 }
 
-class Button
+class Label
 {
-    #label;
-    #x; #y;
-    #width; #height;
+    _label;
+    _x; _y;
+    _width; _height;
+
+    constructor(x, y, label)
+    {
+        this._x = x * SCALE;
+        this._y = y * SCALE;
+        this._width = BUTTON_WIDTH * SCALE;
+        this._height = BUTTON_HEIGHT * SCALE;
+        this._label = label;
+    }
+
+    draw()
+    {
+        fill(color(255, 150, 150));
+        rect(this._x, this._y, this._width, this._height);
+        fill(255, 255, 255);
+        text(this._label, this._x+this._width/2, this._y+this._height/2);
+    }
+}
+
+class Button extends Label
+{
     #onClick;
 
-    /**
-     * 
-     * @param {number} x 
-     * @param {number} y 
-     * @param {number} width 
-     * @param {number} height 
-     * @param {String} label 
-     * @param {Function} onClick 
-     */
-    constructor(x, y, width, height, label, onClick)
+    constructor(x, y, label, onClick)
     {
-        this.#x = x * SCALE;
-        this.#y = y * SCALE;
-        this.#width = width * SCALE;
-        this.#height = height * SCALE;
-        this.#label = label;
+        super(x, y, label);
         this.#onClick = onClick;
     }
 
     draw()
     {
         fill( this.isMouseOver() ? color(100, 0, 0) : color(255, 0, 0) );
-        rect(this.#x, this.#y, this.#width, this.#height);
+        rect(this._x, this._y, this._width, this._height);
         fill(255, 255, 255);
-        text(this.#label, this.#x+this.#width/2, this.#y+this.#height/2);
+        text(this._label, this._x+this._width/2, this._y+this._height/2);
     }
 
     click()
@@ -87,8 +102,8 @@ class Button
     isMouseOver()
     {
         return (
-            mouseX > this.#x && mouseX < this.#x + this.#width &&
-            mouseY > this.#y && mouseY < this.#y + this.#height
+            mouseX > this._x && mouseX < this._x + this._width &&
+            mouseY > this._y && mouseY < this._y + this._height
         );
     }
 }
@@ -172,24 +187,34 @@ function setup()
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
     
-    homeButton = new Button(0, 0, BUTTON_WIDTH, BUTTON_HEIGHT, "Home", goHome);
-    wardrobeButton = new Button(BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT, "Wardrobe", openWardrobe);
+    homeButton = new Button(0, 0, "Home", goHome);
+    wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);
+    equipmentButton = new Button(BUTTON_WIDTH*2, 0, "Equipment", openEquipment);
+    moneyLabel = new Label(0, SCREEN_SIZE-BUTTON_HEIGHT, `£ ${money}`);
+    temperatureLabel = new Label(BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT, `${temperature} ℃`);
+    insulationLabel = new Label(BUTTON_WIDTH*2, SCREEN_SIZE-BUTTON_HEIGHT, `Ins: ${insulation}`);
+    healthLabel = new Label(BUTTON_WIDTH*3, SCREEN_SIZE-BUTTON_HEIGHT, `${health} HP`);
     
     mainScene = new Scene([snowBG, platform, snowman], color(0, 255, 255));
-    wardrobeScene = new Scene([], color(204, 102, 0));    
+    wardrobeScene = new Scene([], color(204, 102, 0));   
+    equipmentScene = new Scene([], color(255, 0, 255)); 
 
     activeScene = mainScene;
-    buttons.push(wardrobeButton, homeButton);
+    buttons.push(wardrobeButton, homeButton, equipmentButton);
+    labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel);
 }
 
 function draw()
 {
     activeScene.draw();
 
+    drawSnow();
+
     for (let b of buttons)
         b.draw();
+    for (let l of labels)
+        l.draw();
 
-    drawSnow();
 }
 
 function mouseClicked()
@@ -218,6 +243,11 @@ function openWardrobe()
 function goHome()
 {
     loadScene(mainScene);
+}
+
+function openEquipment()
+{
+    loadScene(equipmentScene);
 }
 
 function buttonFunction()

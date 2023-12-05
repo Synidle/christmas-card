@@ -14,6 +14,11 @@ let health = 100;
 let snowman, snowmanImg;
 let platform, platformImg;
 let snowBG, snowBGImg;
+let tophat, tophatImg;
+let necktie, necktieImg;
+
+let clothesHats = [];
+let clothesAccessories = [];
 
 let snowSprites = [];
 
@@ -137,9 +142,50 @@ class Sprite
 
 class Snowman extends Sprite
 {
+    #clothes = [null, null];
+
     constructor(img, x, y, width, height)
     {
         super(img, x, y, width, height);
+    }
+
+    /**
+     * 
+     * @param {Clothing} clothing hat, accessory
+     */
+    wearClothing(clothing)
+    {
+        switch(clothing.type)
+        {
+            case "hat":
+                this.#clothes[0] = clothing;
+                break;
+            case "accessory":
+                this.#clothes[1] = clothing;
+                break;
+        }
+    }
+
+    draw()
+    {
+        super.draw();
+        
+        for (let c of this.#clothes)
+            if (c != null)
+                c.draw();
+    }
+}
+
+class Clothing extends Sprite
+{
+    #type;
+
+    get type() { return this.#type; }
+
+    constructor(img, type)
+    {
+        super(img, SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 48);
+        this.#type = type;
     }
 }
 
@@ -172,6 +218,8 @@ function preload()
     snowmanImg = loadImage("assets/snowman.png");
     platformImg = loadImage("assets/platform.png");
     snowBGImg = loadImage("assets/snowbg.png");
+    tophatImg = loadImage("assets/tophat.png");
+    necktieImg = loadImage("assets/tie.png");
 }
 
 function setup()
@@ -186,6 +234,12 @@ function setup()
     snowman = new Snowman([snowmanImg], SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 32);
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
+
+    tophat = new Clothing([tophatImg], "hat");
+    necktie = new Clothing([necktieImg], "accessory");
+
+    snowman.wearClothing(tophat);
+    snowman.wearClothing(necktie);
     
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);

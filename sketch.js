@@ -113,12 +113,24 @@ class Button extends Label
     }
 }
 
+class ItemButton extends Button
+{
+    #item;
+
+    constructor (x, y)
+    {
+        super()
+    }
+}
+
 class Sprite
 {
-    #imgs;
+    #imgs = [];
     #currentImage;
     #x; #y;
     #width; #height;
+
+    get currentImage() { return this.#currentImage; }
 
     /**
      * 
@@ -126,7 +138,8 @@ class Sprite
      */
     constructor(imgs, x, y, width, height)
     {
-        this.#currentImage = imgs[0];
+        this.#imgs = imgs;
+        this.#currentImage = this.#imgs[0];
         this.#x = x;
         this.#y = y;
         this.#width = width;
@@ -142,12 +155,13 @@ class Sprite
 
 class Snowman extends Sprite
 {
-    #clothes = [null, null];
+    #clothesSprites = [null, null];
+    #clothesItems = [null, null];
 
     get insulation()
     {
         let i = 0;
-        for (let c of this.#clothes)
+        for (let c of this.#clothesItems)
             if (c != null)
                 i += c.insulation;
         return i;
@@ -160,17 +174,19 @@ class Snowman extends Sprite
 
     /**
      * 
-     * @param {Clothing} clothing hat, accessory
+     * @param {ClothingItem} clothing hat, accessory
      */
     wearClothing(clothing)
     {
         switch(clothing.type)
         {
             case "hat":
-                this.#clothes[0] = clothing;
+                this.#clothesItems[0] = clothing;
+                this.#clothesSprites[0] = new ClothingSprite(clothing);
                 break;
             case "accessory":
-                this.#clothes[1] = clothing;
+                this.#clothesItems[1] = clothing;
+                this.#clothesSprites[1] = new ClothingSprite(clothing);
                 break;
         }
     }
@@ -179,23 +195,56 @@ class Snowman extends Sprite
     {
         super.draw();
         
-        for (let c of this.#clothes)
+        for (let c of this.#clothesSprites)
             if (c != null)
                 c.draw();
     }
 }
 
-class Clothing extends Sprite
+class ClothingSprite extends Sprite
+{
+    #item;
+
+    constructor(item)
+    {
+        super(item.imgs, SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 48);
+        this.#item = item;
+    }
+}
+
+class Item
+{
+    #name;
+    #price;
+    #imgs;
+
+    get imgs() { return this.#imgs; }
+
+    /**
+     * 
+     * @param {String} name 
+     * @param {number} price 
+     * @param {Image[]} imgs 
+     */
+    constructor(name, price, imgs)
+    {
+        this.#name = name;
+        this.#price = price;
+        this.#imgs = imgs;
+    }
+}
+
+class ClothingItem extends Item
 {
     #type;
     #insulation;
 
-    get type() { return this.#type; }
+    get type() { return this.#type }
     get insulation() { return this.#insulation; }
 
-    constructor(img, type, insulation)
+    constructor(name, type, price, insulation, img)
     {
-        super(img, SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 48);
+        super(name, price, [img]);
         this.#type = type;
         this.#insulation = insulation;
     }
@@ -247,8 +296,11 @@ function setup()
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
 
-    tophat = new Clothing([tophatImg], "hat", 5);
-    necktie = new Clothing([necktieImg], "accessory", 1);
+    tophat = new ClothingItem("Top Hat", "hat", 100, 5, tophatImg);
+    necktie = new ClothingItem("Tie", "accessory", 20, 1, necktieImg);
+
+    tophatSprite = new ClothingSprite(tophat);
+    necktieSprite = new ClothingSprite(necktie);
 
     snowman.wearClothing(tophat);
     snowman.wearClothing(necktie);
@@ -332,10 +384,4 @@ function drawSnow()
         snowSprites[i].move();
     }
     snowSprites.push(new SnowSprite());
-
-    /*for (let s of snowSprites)
-    {
-        s.draw();
-        s.move();
-    }*/
 }

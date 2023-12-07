@@ -15,3 +15,7 @@
 
   ### Health
    The snowman loses HP if the temperature is above 0 ℃, and regains HP at 0 ℃ and below. If the snowman reaches 0 HP, he will die forever.
+
+ ## Credits
+  - Ben Lockyer
+  - Noah Lord  

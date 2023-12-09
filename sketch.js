@@ -27,6 +27,8 @@ let labels = [];
 let wardrobeButton, equipmentButton;
 let moneyLabel, temperatureLabel, insulationLabel, healthLabel;
 
+let tophatButton, necktieButton;
+
 let mainScene, wardrobeScene, equipmentScene;
 let activeScene;
 
@@ -117,9 +119,18 @@ class ItemButton extends Button
 {
     #item;
 
-    constructor (x, y)
+    get item() { return this.#item; }
+
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {Item} item 
+     */
+    constructor (x, y, item)
     {
-        super()
+        super(x, y, item.name, selectItem);
+        this.#item = item;
     }
 }
 
@@ -181,12 +192,28 @@ class Snowman extends Sprite
         switch(clothing.type)
         {
             case "hat":
-                this.#clothesItems[0] = clothing;
-                this.#clothesSprites[0] = new ClothingSprite(clothing);
+                if (this.#clothesItems[0] == clothing)
+                {
+                    this.#clothesItems[0] = null;
+                    this.#clothesSprites[0] = null;
+                }
+                else
+                {
+                    this.#clothesItems[0] = clothing;
+                    this.#clothesSprites[0] = new ClothingSprite(clothing);
+                }
                 break;
             case "accessory":
-                this.#clothesItems[1] = clothing;
-                this.#clothesSprites[1] = new ClothingSprite(clothing);
+                if (this.#clothesItems[1] == clothing)
+                {
+                    this.#clothesItems[1] = null;
+                    this.#clothesSprites[1] = null;
+                }
+                else
+                {
+                    this.#clothesItems[1] = clothing;
+                    this.#clothesSprites[1] = new ClothingSprite(clothing);
+                }
                 break;
         }
     }
@@ -219,6 +246,7 @@ class Item
     #imgs;
 
     get imgs() { return this.#imgs; }
+    get name() { return this.#name; }
 
     /**
      * 
@@ -242,9 +270,9 @@ class ClothingItem extends Item
     get type() { return this.#type }
     get insulation() { return this.#insulation; }
 
-    constructor(name, type, price, insulation, img)
+    constructor(name, type, price, insulation, imgs)
     {
-        super(name, price, [img]);
+        super(name, price, imgs);
         this.#type = type;
         this.#insulation = insulation;
     }
@@ -296,14 +324,12 @@ function setup()
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
 
-    tophat = new ClothingItem("Top Hat", "hat", 100, 5, tophatImg);
-    necktie = new ClothingItem("Tie", "accessory", 20, 1, necktieImg);
+    tophat = new ClothingItem("Top Hat", "hat", 100, 5, [tophatImg]);
+    necktie = new ClothingItem("Tie", "accessory", 20, 1, [necktieImg]);
 
     tophatSprite = new ClothingSprite(tophat);
     necktieSprite = new ClothingSprite(necktie);
 
-    snowman.wearClothing(tophat);
-    snowman.wearClothing(necktie);
     insulation = snowman.insulation;
     
     homeButton = new Button(0, 0, "Home", goHome);
@@ -314,12 +340,16 @@ function setup()
     insulationLabel = new Label(BUTTON_WIDTH*2, SCREEN_SIZE-BUTTON_HEIGHT, `Ins: ${insulation}`);
     healthLabel = new Label(BUTTON_WIDTH*3, SCREEN_SIZE-BUTTON_HEIGHT, `${health} HP`);
     
+    tophatButton = new ItemButton(10, 20, tophat);
+    necktieButton = new ItemButton(10, 30, necktie);
+
+
     mainScene = new Scene([snowBG, platform, snowman], color(0, 255, 255));
     wardrobeScene = new Scene([], color(204, 102, 0));   
     equipmentScene = new Scene([], color(255, 0, 255)); 
 
     activeScene = mainScene;
-    buttons.push(wardrobeButton, homeButton, equipmentButton);
+    buttons.push(wardrobeButton, homeButton, equipmentButton, tophatButton, necktieButton);
     labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel);
 }
 
@@ -370,9 +400,12 @@ function openEquipment()
     loadScene(equipmentScene);
 }
 
-function buttonFunction()
+/**
+ * Event function called by ItemButton
+ */
+function selectItem()
 {
-    console.log("PRESSED BUTTON");
+    snowman.wearClothing(this.item);
 }
 
 function drawSnow()

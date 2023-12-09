@@ -1,3 +1,4 @@
+//#region constants
 let SCALE = 8;
 let SCREEN_SIZE = 80
 
@@ -5,12 +6,19 @@ let FRAMERATE = 12;
 
 let BUTTON_WIDTH = 12;
 let BUTTON_HEIGHT = 6;
+//#endregion
+
+//#region important values
+let timeElapsed = 0;
 
 let money = 10;
 let temperature = -5;
 let insulation = 0;
 let health = 100;
+let hours = 0;
+//#endregion
 
+//#region sprite stuff
 let snowman, snowmanImg;
 let platform, platformImg;
 let snowBG, snowBGImg;
@@ -21,16 +29,21 @@ let clothesHats = [];
 let clothesAccessories = [];
 
 let snowSprites = [];
+//#endregion
 
+//#region UI elements
 let buttons = [];
 let labels = [];
 let wardrobeButton, equipmentButton;
 let moneyLabel, temperatureLabel, insulationLabel, healthLabel;
 
 let tophatButton, necktieButton;
+//#endregion
 
+//#region scenes
 let mainScene, wardrobeScene, equipmentScene;
 let activeScene;
+//#endregion
 
 class Scene
 {
@@ -313,25 +326,32 @@ function preload()
 
 function setup()
 {
+    //#region p5js setup
     createCanvas(640, 640);
     noStroke();
     imageMode(CENTER);
     textAlign(CENTER, CENTER);
     textSize(18);
     frameRate(FRAMERATE);
+    //#endregion
 
+    //#region sprites
     snowman = new Snowman([snowmanImg], SCREEN_SIZE/2, SCREEN_SIZE/2-2, 32, 32);
     platform = new Sprite([platformImg], SCREEN_SIZE/2, SCREEN_SIZE/2+4, 32, 32);
     snowBG = new Sprite([snowBGImg], SCREEN_SIZE/2, SCREEN_SIZE/2, 80, 80);
+    //#endregion
 
+    //#region items
     tophat = new ClothingItem("Top Hat", "hat", 100, 5, [tophatImg]);
     necktie = new ClothingItem("Tie", "accessory", 20, 1, [necktieImg]);
 
     tophatSprite = new ClothingSprite(tophat);
     necktieSprite = new ClothingSprite(necktie);
+    //#endregion
 
     insulation = snowman.insulation;
     
+    //#region UI elements
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);
     equipmentButton = new Button(BUTTON_WIDTH*2, 0, "Equipment", openEquipment);
@@ -342,11 +362,13 @@ function setup()
     
     tophatButton = new ItemButton(10, 20, tophat);
     necktieButton = new ItemButton(10, 30, necktie);
+    //#endregion
 
-
+    //#region scenes
     mainScene = new Scene([snowBG, platform, snowman], color(0, 255, 255));
     wardrobeScene = new Scene([], color(204, 102, 0));   
     equipmentScene = new Scene([], color(255, 0, 255)); 
+    //#endregion
 
     activeScene = mainScene;
     buttons.push(wardrobeButton, homeButton, equipmentButton, tophatButton, necktieButton);

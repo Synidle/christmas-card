@@ -4,6 +4,8 @@ let SCREEN_SIZE = 80
 
 let FRAMERATE = 12;
 
+let HOUR_RATE = 60;
+
 let BUTTON_WIDTH = 12;
 let BUTTON_HEIGHT = 6;
 //#endregion
@@ -35,7 +37,7 @@ let snowSprites = [];
 let buttons = [];
 let labels = [];
 let wardrobeButton, equipmentButton;
-let moneyLabel, temperatureLabel, insulationLabel, healthLabel;
+let moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel;
 
 let tophatButton, necktieButton;
 //#endregion
@@ -78,7 +80,7 @@ class Label
     _x; _y;
     _width; _height;
 
-    constructor(x, y, label)
+    constructor(x, y, label = " ")
     {
         this._x = x * SCALE;
         this._y = y * SCALE;
@@ -93,6 +95,12 @@ class Label
         rect(this._x, this._y, this._width, this._height);
         fill(255, 255, 255);
         text(this._label, this._x+this._width/2, this._y+this._height/2);
+    }
+
+    update(label)
+    {
+        console.log(label);
+        this._label = label;
     }
 }
 
@@ -355,11 +363,12 @@ function setup()
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);
     equipmentButton = new Button(BUTTON_WIDTH*2, 0, "Equipment", openEquipment);
-    moneyLabel = new Label(0, SCREEN_SIZE-BUTTON_HEIGHT, `£ ${money}`);
-    temperatureLabel = new Label(BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT, `${temperature} ℃`);
-    insulationLabel = new Label(BUTTON_WIDTH*2, SCREEN_SIZE-BUTTON_HEIGHT, `Ins: ${insulation}`);
-    healthLabel = new Label(BUTTON_WIDTH*3, SCREEN_SIZE-BUTTON_HEIGHT, `${health} HP`);
-    
+    moneyLabel = new Label(0, SCREEN_SIZE-BUTTON_HEIGHT);
+    temperatureLabel = new Label(BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT);
+    insulationLabel = new Label(BUTTON_WIDTH*2, SCREEN_SIZE-BUTTON_HEIGHT);
+    healthLabel = new Label(BUTTON_WIDTH*3, SCREEN_SIZE-BUTTON_HEIGHT);
+    hoursLabel = new Label(SCREEN_SIZE-BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT);
+
     tophatButton = new ItemButton(10, 20, tophat);
     necktieButton = new ItemButton(10, 30, necktie);
     //#endregion
@@ -372,7 +381,7 @@ function setup()
 
     activeScene = mainScene;
     buttons.push(wardrobeButton, homeButton, equipmentButton, tophatButton, necktieButton);
-    labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel);
+    labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel);
 }
 
 function draw()
@@ -382,11 +391,15 @@ function draw()
     if (activeScene == mainScene)
         drawSnow();
 
+    updateLabels();
+
     for (let b of buttons)
         b.draw();
     for (let l of labels)
         l.draw();
 
+    timeElapsed ++;
+    hours = timeElapsed % HOUR_RATE == 0 ? hours+1 : hours;
 }
 
 function mouseClicked()
@@ -428,6 +441,16 @@ function openEquipment()
 function selectItem()
 {
     snowman.wearClothing(this.item);
+    insulation = snowman.insulation;
+}
+
+function updateLabels()
+{
+    moneyLabel.update(`£ ${money}`);
+    temperatureLabel.update(`${temperature} ℃`);
+    insulationLabel.update(`Ins: ${insulation}`);
+    healthLabel.update(`${health} HP`);
+    hoursLabel.update(`${hours} h`);
 }
 
 function drawSnow()

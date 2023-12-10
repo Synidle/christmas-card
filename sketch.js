@@ -51,16 +51,21 @@ class Scene
 {
     #sprites;
     #fillColour;
+    #buttons;
+
+    get buttons() { return this.#buttons; }
 
     /**
      * 
      * @param {Sprite[]} sprites 
      * @param {Color} fillColour
+     * @param {Button[]} buttons
      */
-    constructor(sprites, fillColour)
+    constructor(sprites, fillColour, buttons = [])
     {
         this.#sprites = sprites;
         this.#fillColour = fillColour;
+        this.#buttons = buttons;
     }
 
     draw()
@@ -68,9 +73,10 @@ class Scene
         background(this.#fillColour);
 
         for (let s of this.#sprites)
-        {
             s.draw();
-        }
+
+        for (let b of this.#buttons)
+            b.draw();
     }
 }
 
@@ -99,7 +105,6 @@ class Label
 
     update(label)
     {
-        console.log(label);
         this._label = label;
     }
 }
@@ -375,12 +380,12 @@ function setup()
 
     //#region scenes
     mainScene = new Scene([snowBG, platform, snowman], color(0, 255, 255));
-    wardrobeScene = new Scene([], color(204, 102, 0));   
+    wardrobeScene = new Scene([], color(204, 102, 0), [tophatButton, necktieButton]);   
     equipmentScene = new Scene([], color(255, 0, 255)); 
     //#endregion
 
     activeScene = mainScene;
-    buttons.push(wardrobeButton, homeButton, equipmentButton, tophatButton, necktieButton);
+    buttons.push(wardrobeButton, homeButton, equipmentButton);
     labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel);
 }
 
@@ -404,11 +409,12 @@ function draw()
 
 function mouseClicked()
 {
-    for (let b of buttons)
-    {
+    for (let b of activeScene.buttons)
         if (b.isMouseOver())
             b.click();
-    }
+    for (let b of buttons)
+        if (b.isMouseOver())
+            b.click();
 }
 
 /**

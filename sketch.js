@@ -15,7 +15,7 @@ let bgm;
 //#region important values
 let timeElapsed = 0;
 
-let money = 10;
+let money = 100;
 let temperature = -5;
 let insulation = 0;
 let health = 100;
@@ -299,15 +299,14 @@ class Item
         this.#imgs = imgs;
     }
 
-    purchase(money)
+    purchase()
     {
-        if (this.#price < money)
-        {
-            this.#purchased = true;
-            return true;
-        }
-        else
-            return false;
+        if (!this.#purchased)
+            if (this.#price <= money)
+            {
+                this.#purchased = true;
+                money -= this.#price;
+            }
     }
 }
 
@@ -476,8 +475,13 @@ function openEquipment()
  */
 function selectItem()
 {
-    snowman.wearClothing(this.item);
-    insulation = snowman.insulation;
+    this.item.purchase(money)
+    if (this.item.purchased)
+    {
+        snowman.wearClothing(this.item);
+        insulation = snowman.insulation;
+    }
+    this.update();
 }
 
 function updateLabels()

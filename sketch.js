@@ -10,6 +10,8 @@ let BUTTON_WIDTH = 12;
 let BUTTON_HEIGHT = 6;
 //#endregion
 
+let bgm;
+
 //#region important values
 let timeElapsed = 0;
 
@@ -37,7 +39,7 @@ let snowSprites = [];
 let permanentButtons = [];
 let buttons = [];
 let labels = [];
-let wardrobeButton, equipmentButton;
+let wardrobeButton, equipmentButton, bgmButton;
 let moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel;
 
 let tophatButton, necktieButton;
@@ -328,6 +330,8 @@ class SnowSprite
 
 function preload()
 {
+    bgm = loadSound("assets/bgm.wav");
+
     snowmanImg = loadImage("assets/snowman.png");
     platformImg = loadImage("assets/platform.png");
     snowBGImg = loadImage("assets/snowbg.png");
@@ -366,6 +370,8 @@ function setup()
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);
     equipmentButton = new Button(BUTTON_WIDTH*2, 0, "Equipment", openEquipment);
+    bgmButton = new Button(SCREEN_SIZE-BUTTON_WIDTH, 0, "BGM", playBGM);
+
     moneyLabel = new Label(0, SCREEN_SIZE-BUTTON_HEIGHT);
     temperatureLabel = new Label(BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT);
     insulationLabel = new Label(BUTTON_WIDTH*2, SCREEN_SIZE-BUTTON_HEIGHT);
@@ -383,7 +389,7 @@ function setup()
     //#endregion
 
     activeScene = mainScene;
-    permanentButtons.push(wardrobeButton, homeButton, equipmentButton);
+    permanentButtons.push(wardrobeButton, homeButton, equipmentButton, bgmButton);
     buttons = permanentButtons;
     labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel);
 }
@@ -466,4 +472,15 @@ function drawSnow()
         snowSprites[i].move();
     }
     snowSprites.push(new SnowSprite());
+}
+
+function playBGM()
+{
+    if (bgm.isPlaying())
+        bgm.stop()
+    else
+    {
+        bgm.play();
+        bgm.loop();
+    }
 }

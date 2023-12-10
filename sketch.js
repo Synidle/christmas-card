@@ -34,6 +34,7 @@ let snowSprites = [];
 //#endregion
 
 //#region UI elements
+let permanentButtons = [];
 let buttons = [];
 let labels = [];
 let wardrobeButton, equipmentButton;
@@ -74,9 +75,6 @@ class Scene
 
         for (let s of this.#sprites)
             s.draw();
-
-        for (let b of this.#buttons)
-            b.draw();
     }
 }
 
@@ -385,7 +383,8 @@ function setup()
     //#endregion
 
     activeScene = mainScene;
-    buttons.push(wardrobeButton, homeButton, equipmentButton);
+    permanentButtons.push(wardrobeButton, homeButton, equipmentButton);
+    buttons = permanentButtons;
     labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel);
 }
 
@@ -409,9 +408,6 @@ function draw()
 
 function mouseClicked()
 {
-    for (let b of activeScene.buttons)
-        if (b.isMouseOver())
-            b.click();
     for (let b of buttons)
         if (b.isMouseOver())
             b.click();
@@ -423,6 +419,8 @@ function mouseClicked()
  */
 function loadScene(scene)
 {
+    buttons = permanentButtons.concat(scene.buttons);
+    console.log(buttons);
     activeScene = scene;
 }
 

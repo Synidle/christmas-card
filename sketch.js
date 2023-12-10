@@ -105,7 +105,8 @@ class Label
 
     update(label)
     {
-        this._label = label;
+        if (label != null)
+            this._label = label;
     }
 }
 
@@ -157,6 +158,14 @@ class ItemButton extends Button
     {
         super(x, y, item.name, selectItem);
         this.#item = item;
+    }
+
+    update()
+    {
+        if (this.#item.purchased)
+            this._label = this.#item.name;
+        else
+            super.update(this.#item.name + ` £${this.#item.price}`);
     }
 }
 
@@ -270,9 +279,12 @@ class Item
     #name;
     #price;
     #imgs;
+    #purchased = false;
 
     get imgs() { return this.#imgs; }
     get name() { return this.#name; }
+    get price() { return this.#price; }
+    get purchased() { return this.#purchased; }
 
     /**
      * 
@@ -285,6 +297,17 @@ class Item
         this.#name = name;
         this.#price = price;
         this.#imgs = imgs;
+    }
+
+    purchase(money)
+    {
+        if (this.#price < money)
+        {
+            this.#purchased = true;
+            return true;
+        }
+        else
+            return false;
     }
 }
 
@@ -426,7 +449,10 @@ function mouseClicked()
 function loadScene(scene)
 {
     buttons = permanentButtons.concat(scene.buttons);
-    console.log(buttons);
+    for (let b of buttons)
+    {
+        b.update();
+    }
     activeScene = scene;
 }
 

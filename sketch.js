@@ -113,6 +113,7 @@ class Label
 class Button extends Label
 {
     #onClick;
+    #selected;
 
     constructor(x, y, label, onClick)
     {
@@ -122,7 +123,7 @@ class Button extends Label
 
     draw()
     {
-        fill( this.isMouseOver() ? color(100, 0, 0) : color(255, 0, 0) );
+        fill( this.isMouseOver() || this.#selected ? color(100, 0, 0) : color(255, 0, 0) );
         rect(this._x, this._y, this._width, this._height);
         fill(255, 255, 255);
         text(this._label, this._x+this._width/2, this._y+this._height/2);
@@ -139,6 +140,16 @@ class Button extends Label
             mouseX > this._x && mouseX < this._x + this._width &&
             mouseY > this._y && mouseY < this._y + this._height
         );
+    }
+
+    select()
+    {
+        this.#selected = true;
+    }
+
+    unselect()
+    {
+        this.#selected = false;
     }
 }
 
@@ -166,6 +177,9 @@ class ItemButton extends Button
             this._label = this.#item.name;
         else
             super.update(this.#item.name + ` £${this.#item.price}`);
+
+        if (!this.#item.equipped)
+            this.unselect();
     }
 }
 
@@ -231,11 +245,13 @@ class Snowman extends Sprite
                 {
                     this.#clothesItems[0] = null;
                     this.#clothesSprites[0] = null;
+                    clothing.unequip();
                 }
                 else
                 {
                     this.#clothesItems[0] = clothing;
                     this.#clothesSprites[0] = new ClothingSprite(clothing);
+                    clothing.equip();
                 }
                 break;
             case "accessory":
@@ -243,11 +259,13 @@ class Snowman extends Sprite
                 {
                     this.#clothesItems[1] = null;
                     this.#clothesSprites[1] = null;
+                    clothing.unequip();
                 }
                 else
                 {
                     this.#clothesItems[1] = clothing;
                     this.#clothesSprites[1] = new ClothingSprite(clothing);
+                    clothing.equip();
                 }
                 break;
         }
@@ -280,11 +298,13 @@ class Item
     #price;
     #imgs;
     #purchased = false;
+    #equipped = false;
 
     get imgs() { return this.#imgs; }
     get name() { return this.#name; }
     get price() { return this.#price; }
     get purchased() { return this.#purchased; }
+    get equipped() { return this.#equipped; }
 
     /**
      * 
@@ -308,6 +328,9 @@ class Item
                 money -= this.#price;
             }
     }
+
+    equip() { this.#equipped = true; }
+    unequip() { this.#equipped = false; }
 }
 
 class ClothingItem extends Item
@@ -478,6 +501,7 @@ function selectItem()
     this.item.purchase(money)
     if (this.item.purchased)
     {
+        this.select();
         snowman.wearClothing(this.item);
         insulation = snowman.insulation;
     }

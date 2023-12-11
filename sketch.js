@@ -1,3 +1,5 @@
+// WEARING TORSO ITEM AFTER ACCESSORY ITEM MAKES ACCESSORY ITEM DISAPPEAR
+
 //#region globals
 
 //#region constants
@@ -17,7 +19,7 @@ let bgm;
 //#region important values
 let timeElapsed = 0;
 
-let money = 100;
+let money = 1000;
 let temperature = -5;
 let insulation = 0;
 let health = 100;
@@ -28,8 +30,14 @@ let hours = 0;
 let snowman, snowmanImg;
 let platform, platformImg;
 let snowBG, snowBGImg;
-let tophat, tophatImg;
-let necktie, necktieImg;
+
+let woolyhat, tophat, vikinghelmet;
+let shirtbuttons, tshirt, jacket;
+let glasses, necktie, moustache;
+
+let woolyhatImg, tophatImg, vikinghelmetImg;
+let shirtbuttonsImg, tshirtImg, jacketImg;
+let glassesImg, necktieImg, moustacheImg;
 
 let clothesHats = [];
 let clothesAccessories = [];
@@ -44,7 +52,9 @@ let labels = [];
 let wardrobeButton, equipmentButton, bgmButton;
 let moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel;
 
-let tophatButton, necktieButton;
+let woolyhatButton, tophatButton, vikinghelmetButton;
+let shirtbuttonsButton, tshirtButton, jacketButton;
+let glassesButton, necktieButton, moustacheButton;
 //#endregion
 
 //#region scenes
@@ -221,8 +231,8 @@ class Sprite
 
 class Snowman extends Sprite
 {
-    #clothesSprites = [null, null];
-    #clothesItems = [null, null];
+    #clothesSprites = [null, null, null];
+    #clothesItems = [null, null, null];
 
     get insulation()
     {
@@ -260,7 +270,7 @@ class Snowman extends Sprite
                     clothing.equip();
                 }
                 break;
-            case "accessory":
+            case "torso":
                 if (this.#clothesItems[1] == clothing)
                 {
                     this.#clothesItems[1] = null;
@@ -271,6 +281,19 @@ class Snowman extends Sprite
                 {
                     this.#clothesItems[1] = clothing;
                     this.#clothesSprites[1] = new ClothingSprite(clothing);
+                    clothing.equip();
+                }
+            case "accessory":
+                if (this.#clothesItems[2] == clothing)
+                {
+                    this.#clothesItems[2] = null;
+                    this.#clothesSprites[2] = null;
+                    clothing.unequip();
+                }
+                else
+                {
+                    this.#clothesItems[2] = clothing;
+                    this.#clothesSprites[2] = new ClothingSprite(clothing);
                     clothing.equip();
                 }
                 break;
@@ -383,6 +406,8 @@ class SnowSprite
 
 //#region functions
 
+//#region p5.js functions
+
 function preload()
 {
     bgm = loadSound("assets/bgm.wav");
@@ -390,8 +415,16 @@ function preload()
     snowmanImg = loadImage("assets/snowman.png");
     platformImg = loadImage("assets/platform.png");
     snowBGImg = loadImage("assets/snowbg.png");
+
+    woolyhatImg = loadImage("assets/woolyhat.png");
     tophatImg = loadImage("assets/tophat.png");
+    vikinghelmetImg = loadImage("assets/vikinghelmet.png");
+    shirtbuttonsImg = loadImage("assets/shirtbuttons.png");
+    tshirtImg = loadImage("assets/tshirt.png");
+    jacketImg = loadImage("assets/jacket.png");
+    glassesImg = loadImage("assets/glasses.png");
     necktieImg = loadImage("assets/tie.png");
+    moustacheImg = loadImage("assets/moustache.png");
 }
 
 function setup()
@@ -412,11 +445,15 @@ function setup()
     //#endregion
 
     //#region items
-    tophat = new ClothingItem("Top Hat", "hat", 100, 5, [tophatImg]);
-    necktie = new ClothingItem("Tie", "accessory", 20, 1, [necktieImg]);
-
-    tophatSprite = new ClothingSprite(tophat);
-    necktieSprite = new ClothingSprite(necktie);
+    woolyhat = new ClothingItem("WlyHt", "hat", 30, 3, [woolyhatImg]);
+    tophat = new ClothingItem("TopHt", "hat", 100, 5, [tophatImg]);
+    vikinghelmet = new ClothingItem("VHlm", "hat", 500, 10, [vikinghelmetImg]);
+    shirtbuttons = new ClothingItem("Btns", "torso", 5, 1, [shirtbuttonsImg]);
+    tshirt = new ClothingItem("Tshirt", "torso", 30, 10, [tshirtImg]);
+    jacket = new ClothingItem("Jkt", "torso", 300, 20, [jacketImg]); 
+    glasses = new ClothingItem("Gls", "accessory", 10, 1, [glassesImg]);
+    necktie = new ClothingItem("Tie", "accessory", 20, 10, [necktieImg]);
+    moustache = new ClothingItem("Tash", "accessory", 90, 6, [moustacheImg]);
     //#endregion
 
     insulation = snowman.insulation;
@@ -433,13 +470,23 @@ function setup()
     healthLabel = new Label(BUTTON_WIDTH*3, SCREEN_SIZE-BUTTON_HEIGHT);
     hoursLabel = new Label(SCREEN_SIZE-BUTTON_WIDTH, SCREEN_SIZE-BUTTON_HEIGHT);
 
-    tophatButton = new ItemButton(10, 20, tophat);
-    necktieButton = new ItemButton(10, 30, necktie);
+    woolyhatButton = new ItemButton(5, 15, woolyhat);
+    tophatButton = new ItemButton(5+BUTTON_WIDTH, 15, tophat);
+    vikinghelmetButton = new ItemButton(5+2*BUTTON_WIDTH, 15, vikinghelmet);
+    shirtbuttonsButton = new ItemButton(5, 25, shirtbuttons);
+    tshirtButton = new ItemButton(5+BUTTON_WIDTH, 25, tshirt);
+    jacketButton = new ItemButton(5+2*BUTTON_WIDTH, 25, jacket);
+    glassesButton = new ItemButton(5, 35, glasses);
+    necktieButton = new ItemButton(5+BUTTON_WIDTH, 35, necktie);
+    moustacheButton = new ItemButton(5+2*BUTTON_WIDTH, 35, moustache);
     //#endregion
 
     //#region scenes
     mainScene = new Scene([snowBG, platform, snowman], color(0, 255, 255));
-    wardrobeScene = new Scene([], color(204, 102, 0), [tophatButton, necktieButton]);   
+    wardrobeScene = new Scene([], color(204, 102, 0), [
+        woolyhatButton, tophatButton, vikinghelmetButton, 
+        shirtbuttonsButton, tshirtButton, jacketButton,
+        glassesButton, necktieButton, moustacheButton]);   
     equipmentScene = new Scene([], color(255, 0, 255)); 
     //#endregion
 
@@ -473,6 +520,10 @@ function mouseClicked()
         if (b.isMouseOver())
             b.click();
 }
+
+//#endregion
+
+//#region bespoke functions
 
 /**
  * 
@@ -548,5 +599,7 @@ function playBGM()
         bgm.loop();
     }
 }
+
+//#endregion
 
 //#endregion

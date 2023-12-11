@@ -31,7 +31,6 @@ function draw() {
     background(0);
     image(pieFace, ((foodX * GRID_SIZE)), ((foodY * GRID_SIZE)), GRID_SIZE, GRID_SIZE); // Creates the food
     for (let i = 0; i < preX.length; i++) { // Creates the body, equal to the size of the array
-        //square((preX[i] * GRID_SIZE), (preY[i] * GRID_SIZE), GRID_SIZE);
         image(fatherChristBelly, (preX[i] * GRID_SIZE),(preY[i] * GRID_SIZE), GRID_SIZE, GRID_SIZE);
     }
     image(fatherChristFace, (headX * GRID_SIZE), ((headY * GRID_SIZE)), GRID_SIZE, GRID_SIZE); // Creates the body / head square

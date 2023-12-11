@@ -1,3 +1,5 @@
+//#region globals
+
 //#region constants
 let SCALE = 8;
 let SCREEN_SIZE = 80
@@ -49,6 +51,10 @@ let tophatButton, necktieButton;
 let mainScene, wardrobeScene, equipmentScene;
 let activeScene;
 //#endregion
+
+//#endregion
+
+//#region classes
 
 class Scene
 {
@@ -373,6 +379,10 @@ class SnowSprite
     }
 }
 
+//#endregion
+
+//#region functions
+
 function preload()
 {
     bgm = loadSound("assets/bgm.wav");
@@ -538,3 +548,5 @@ function playBGM()
         bgm.loop();
     }
 }
+
+//#endregion

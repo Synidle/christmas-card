@@ -47,7 +47,7 @@ let snowSprites = [];
 let permanentButtons = [];
 let buttons = [];
 let labels = [];
-let wardrobeButton, equipmentButton, bgmButton;
+let wardrobeButton, equipmentButton, minigameButton, bgmButton;
 let moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel;
 
 let woolyhatButton, tophatButton, vikinghelmetButton;
@@ -444,6 +444,7 @@ function setup()
     homeButton = new Button(0, 0, "Home", goHome);
     wardrobeButton = new Button(BUTTON_WIDTH, 0, "Wardrobe", openWardrobe);
     equipmentButton = new Button(BUTTON_WIDTH*2, 0, "Equipment", openEquipment);
+    minigameButton = new Button(BUTTON_WIDTH*3, 0, "Minigame", startMinigame);
     bgmButton = new Button(SCREEN_SIZE-BUTTON_WIDTH, 0, "BGM", playBGM);
 
     moneyLabel = new Label(0, SCREEN_SIZE-BUTTON_HEIGHT);
@@ -473,7 +474,7 @@ function setup()
     //#endregion
 
     activeScene = mainScene;
-    permanentButtons.push(wardrobeButton, homeButton, equipmentButton, bgmButton);
+    permanentButtons.push(wardrobeButton, homeButton, equipmentButton, minigameButton, bgmButton);
     buttons = permanentButtons;
     labels.push(moneyLabel, temperatureLabel, insulationLabel, healthLabel, hoursLabel);
 }
@@ -534,6 +535,11 @@ function goHome()
 function openEquipment()
 {
     loadScene(equipmentScene);
+}
+
+function startMinigame()
+{
+    let win = window.open("minigame.html");
 }
 
 /**

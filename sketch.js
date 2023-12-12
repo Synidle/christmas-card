@@ -15,9 +15,10 @@ let BUTTON_HEIGHT = 6;
 let bgm;
 
 //#region important values
+let saveData;
 let timeElapsed = 0;
 
-let money = 1000;
+let money = 0;
 let temperature = -5;
 let insulation = 0;
 let health = 100;
@@ -392,6 +393,8 @@ class SnowSprite
 
 function preload()
 {
+    saveData = loadJSON("save.json", loadData);
+
     bgm = loadSound("assets/bgm.wav");
 
     snowmanImg = loadImage("assets/snowman.png");
@@ -507,6 +510,11 @@ function mouseClicked()
 //#endregion
 
 //#region bespoke functions
+
+function loadData()
+{
+    money = saveData["money"];
+}
 
 /**
  * 

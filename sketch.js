@@ -1,5 +1,3 @@
-// WEARING TORSO ITEM AFTER ACCESSORY ITEM MAKES ACCESSORY ITEM DISAPPEAR
-
 //#region globals
 
 //#region constants
@@ -248,6 +246,22 @@ class Snowman extends Sprite
         super(img, x, y, width, height);
     }
 
+    #equipSlot(i, clothing)
+    {
+        if (this.#clothesItems[i] == clothing)
+        {
+            this.#clothesItems[i] = null;
+            this.#clothesSprites[i] = null;
+            clothing.unequip();
+        }
+        else
+        {
+            this.#clothesItems[i] = clothing;
+            this.#clothesSprites[i] = new ClothingSprite(clothing);
+            clothing.equip();
+        }
+    }
+
     /**
      * 
      * @param {ClothingItem} clothing hat, accessory
@@ -257,45 +271,13 @@ class Snowman extends Sprite
         switch(clothing.type)
         {
             case "hat":
-                if (this.#clothesItems[0] == clothing)
-                {
-                    this.#clothesItems[0] = null;
-                    this.#clothesSprites[0] = null;
-                    clothing.unequip();
-                }
-                else
-                {
-                    this.#clothesItems[0] = clothing;
-                    this.#clothesSprites[0] = new ClothingSprite(clothing);
-                    clothing.equip();
-                }
+                this.#equipSlot(0, clothing);
                 break;
             case "torso":
-                if (this.#clothesItems[1] == clothing)
-                {
-                    this.#clothesItems[1] = null;
-                    this.#clothesSprites[1] = null;
-                    clothing.unequip();
-                }
-                else
-                {
-                    this.#clothesItems[1] = clothing;
-                    this.#clothesSprites[1] = new ClothingSprite(clothing);
-                    clothing.equip();
-                }
+                this.#equipSlot(1, clothing);
+                break;
             case "accessory":
-                if (this.#clothesItems[2] == clothing)
-                {
-                    this.#clothesItems[2] = null;
-                    this.#clothesSprites[2] = null;
-                    clothing.unequip();
-                }
-                else
-                {
-                    this.#clothesItems[2] = clothing;
-                    this.#clothesSprites[2] = new ClothingSprite(clothing);
-                    clothing.equip();
-                }
+                this.#equipSlot(2, clothing);
                 break;
         }
     }

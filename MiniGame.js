@@ -1,6 +1,6 @@
-const GRID_SIZE = 20;
-let headX = 10; // Head Coordinates 
-let headY = 10;
+const GRID_SIZE = 50;
+let headX = 1; // Head Coordinates 
+let headY = 1;
 let foodX; // Food Coordinates
 let foodY;
 let speedY = 0; // Speed Variables
@@ -12,11 +12,13 @@ let speedYStore;
 let preX = []; // Previous X & Y Coordinates stored into an array
 let preY = [];
 let ended = 0;
-let pieFace, fatherChristFace;
+let pieFace, fatherChristFace, fatherChristBelly;
 
 function preload() {
     pieFace = loadImage('assets/mincepieFace.png');
     fatherChristFace = loadImage('assets/santaFace.jpeg');
+    fatherChristBelly = loadImage('assets/santaBelly.jpeg')
+
 }
 
 function setup() {
@@ -29,7 +31,7 @@ function draw() {
     background(0);
     image(pieFace, ((foodX * GRID_SIZE)), ((foodY * GRID_SIZE)), GRID_SIZE, GRID_SIZE); // Creates the food
     for (let i = 0; i < preX.length; i++) { // Creates the body, equal to the size of the array
-        image(pieFace, (preX[i] * GRID_SIZE),(preY[i] * GRID_SIZE), GRID_SIZE, GRID_SIZE);
+        image(fatherChristBelly, (preX[i] * GRID_SIZE),(preY[i] * GRID_SIZE), GRID_SIZE, GRID_SIZE);
     }
     image(fatherChristFace, (headX * GRID_SIZE), ((headY * GRID_SIZE)), GRID_SIZE, GRID_SIZE); // Creates the body / head square
     move();
@@ -47,7 +49,7 @@ function draw() {
         preX.pop();
         preY.pop();
     }
-    if ((headX < 0 || headX > 29) || (headY < 0 || headY > 29)) { // Calculates when the snake is out of bounds
+    if ((headX < -1 || headX > 12) || (headY < -1 || headY > 12)) { // Calculates when the snake is out of bounds
         gameOver();
         ended = 1;
         console.log("Game Over");
@@ -113,8 +115,8 @@ function pause() {
 }
 
 function foodRandomiser() { // Randomises coordinates of food
-    foodX = floor(random(1, 29));
-    foodY = floor(random(1, 29));
+    foodX = floor(random(1, 11));
+    foodY = floor(random(1, 11));
 }
 
 function move() { // Moves head square in accordence with the speed
@@ -125,5 +127,5 @@ function move() { // Moves head square in accordence with the speed
 function scoreCounter() { // Manages the score counter at the bottom
     rect(0, 600, 600, 50);
     textSize(32);
-    counterText = text('Score: ' + (counter - 1), 10, 635);
+    counterText = text('Mince Pies: ' + (counter - 1), 10, 635);
 }

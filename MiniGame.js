@@ -1,4 +1,7 @@
 const GRID_SIZE = 50;
+
+let noahsDogShitCode = true;
+
 let headX = 1; // Head Coordinates 
 let headY = 1;
 let foodX; // Food Coordinates
@@ -18,7 +21,6 @@ function preload() {
     pieFace = loadImage('assets/mincepieFace.png');
     fatherChristFace = loadImage('assets/santaFace.jpeg');
     fatherChristBelly = loadImage('assets/santaBelly.jpeg')
-
 }
 
 function setup() {
@@ -66,6 +68,18 @@ function gameOver() { // Game over scene Script
     textSize(64);
     gameOverText = text('Game Over!', 125, 315);
     counterTextEnd = text('Score: ' + (counter - 1), 180, 385);
+
+    if (noahsDogShitCode)
+    {
+        saveData = loadJSON("save.json", saveScore);
+        noahsDogShitCode = false;
+    }
+}
+
+function saveScore()
+{
+    saveData["money"] += counter;
+    saveJSON(saveData, "save.json");
 }
 
 function keyTyped() {

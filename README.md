@@ -1,6 +1,16 @@
 # Christmas Card
  Interactive Christmas Card
 
+ <hr/>
+
+ ## Current State
+  Play the minigame to earn money. Overwrite "save.json" in the game's local folder.
+  Use the money to buy clothes for the snowman.
+
+<b> Game is unfinished so not all of the features below are implemented. </b>
+
+<hr/>
+
  ## How To Play
   The objective of the game is to look after your snowman.
 

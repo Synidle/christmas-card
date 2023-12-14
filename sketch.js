@@ -338,6 +338,7 @@ class Item
             {
                 this.#purchased = true;
                 money -= this.#price;
+                localStorage.setItem("money", money);
             }
     }
 

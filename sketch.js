@@ -393,7 +393,8 @@ class SnowSprite
 
 function preload()
 {
-    saveData = loadJSON("save.json", loadData);
+    //saveData = loadJSON("save.json", loadData);
+    loadData();
 
     bgm = loadSound("assets/bgm.wav");
 
@@ -512,8 +513,14 @@ function mouseClicked()
 //#region bespoke functions
 
 function loadData()
-{
-    money = saveData["money"];
+{   
+    //localStorage.setItem("money", 0);
+    //money = saveData["money"];
+    if (localStorage.getItem("money"))
+        money = localStorage.getItem("money");
+    else
+        localStorage.setItem("money", money);
+    console.log(localStorage.getItem("money"));
 }
 
 /**
@@ -567,6 +574,8 @@ function selectItem()
 
 function updateLabels()
 {
+    loadData();
+
     moneyLabel.update(`£ ${money}`);
     temperatureLabel.update(`${temperature} ℃`);
     insulationLabel.update(`Ins: ${insulation}`);

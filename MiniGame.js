@@ -71,15 +71,21 @@ function gameOver() { // Game over scene Script
 
     if (noahsDogShitCode)
     {
-        saveData = loadJSON("save.json", saveScore);
+        //saveData = loadJSON("save.json", saveScore);
+        saveScore();
         noahsDogShitCode = false;
     }
 }
 
 function saveScore()
 {
-    saveData["money"] += counter;
-    saveJSON(saveData, "save.json");
+    //saveData["money"] += counter;
+    //saveJSON(saveData, "save.json");
+    if (localStorage.getItem("money"))
+        localStorage.setItem("money", parseInt(localStorage.getItem("money")) + counter-1);
+    else
+        localStorage.setItem("money", counter-1);
+    console.log("MONEY: " + parseInt(localStorage.getItem("money")));
 }
 
 function keyTyped() {
